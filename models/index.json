@@ -1,0 +1,116 @@
+{
+ "schema": 1,
+ "updated": "2026-11-21",
+ "models": [
+  {
+   "id": "silver-adskip-1-mini-beta",
+   "name": "广告识别 mini（beta）",
+   "beta": true,
+   "version": "1.0.0-beta.1",
+   "task": "三模态广告识别（视频 / 音频 / 图片，可单独或同时输入）",
+   "params": 48963,
+   "input": {
+    "img": [
+     1,
+     3,
+     32,
+     32
+    ],
+    "vid": [
+     8,
+     3,
+     32,
+     32
+    ],
+    "aud": [
+     1,
+     1,
+     64,
+     32
+    ]
+   },
+   "output": {
+    "p_img": [
+     1,
+     1
+    ],
+    "p_vid": [
+     1,
+     1
+    ],
+    "p_aud": [
+     1,
+     1
+    ]
+   },
+   "preprocess": {
+    "img": "canvas 缩放 32×32，RGB，值域 0–1，CHW",
+    "vid": "抽 8 帧（均匀覆盖片段），各缩 32×32，CHW，值域 0–1",
+    "aud": "16 kHz 单声道，512 点汉宁窗 hop 256，64 维 mel，log(m+1e-6) 后 (m+11)/11 截 0–1，取 32 帧"
+   },
+   "threshold": 0.85,
+   "threshold_source": "验证集 TPR@FPR=5% 中位为 0.9881，实际采用 0.85 便于人工调节",
+   "files": [
+    {
+     "variant": "fp32",
+     "file": "model.fp32.onnx",
+     "size": 199796,
+     "sha256": "0217f9b0f3838f419bf0b31dfbca97b78bedb52052f835905bafdf9bd0a5d5ee",
+     "note": "原始 float32（推荐，精度最高）"
+    },
+    {
+     "variant": "int8",
+     "file": "model.int8.onnx",
+     "size": 172418,
+     "sha256": "79f809f0ae70b2d33ffcb4f1375c4ebbd14cbc2830b230a0e920f97e14091606",
+     "note": "int8 动态量化（仅全连接层）"
+    },
+    {
+     "variant": "q8",
+     "file": "model.q8.onnx",
+     "size": 84750,
+     "sha256": "5bb91e2c730a126b0dff16151c3667ad7e66ef0ec46e74d67100d9dbce1b0db3",
+     "note": "int8 QDQ 全量化（体积最小）"
+    }
+   ],
+   "metrics": {
+    "img": {
+     "n": 189,
+     "pos": 102,
+     "acc@0.5": 1.0,
+     "auc": 1.0,
+     "tpr@fpr5": 1.0,
+     "thr@fpr5": 0.0001,
+     "mean_pos": 0.9999,
+     "mean_neg": 0.0043
+    },
+    "vid": {
+     "n": 189,
+     "pos": 102,
+     "acc@0.5": 1.0,
+     "auc": 1.0,
+     "tpr@fpr5": 1.0,
+     "thr@fpr5": 0.0002,
+     "mean_pos": 1.0,
+     "mean_neg": 0.0
+    },
+    "aud": {
+     "n": 276,
+     "pos": 102,
+     "acc@0.5": 0.6522,
+     "auc": 0.8201,
+     "tpr@fpr5": 0.0,
+     "thr@fpr5": 0.5,
+     "mean_pos": 0.9708,
+     "mean_neg": 0.5441
+    }
+   },
+   "limits": [
+    "训练素材仅 2 支真实广告 + 5 支开放影片，测试集是同片后段，不是跨源验证",
+    "图片分支样本全部来自视频帧，纯静态海报覆盖不足",
+    "音频跨源表现弱（实测准确率 0.65 / AUC 0.82），仅建议作为辅助信号",
+    "beta：结构、阈值、文件名、是否继续分发均可能变更且不另行通知"
+   ]
+  }
+ ]
+}
