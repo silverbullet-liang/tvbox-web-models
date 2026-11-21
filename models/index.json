@@ -1,5 +1,5 @@
 {
- "schema": 1,
+ "schema": 2,
  "updated": "2026-11-21",
  "models": [
   {
@@ -53,27 +53,27 @@
    "files": [
     {
      "variant": "fp32",
-     "file": "model.fp32.onnx",
+     "file": "fp32/model.onnx",
      "size": 199796,
      "sha256": "0217f9b0f3838f419bf0b31dfbca97b78bedb52052f835905bafdf9bd0a5d5ee",
      "note": "原始 float32（推荐，精度最高）",
-     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-beta/model.fp32.onnx"
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-beta/fp32/model.onnx"
     },
     {
      "variant": "int8",
-     "file": "model.int8.onnx",
+     "file": "int8/model.onnx",
      "size": 172418,
      "sha256": "79f809f0ae70b2d33ffcb4f1375c4ebbd14cbc2830b230a0e920f97e14091606",
      "note": "int8 动态量化（仅全连接层）",
-     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-beta/model.int8.onnx"
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-beta/int8/model.onnx"
     },
     {
      "variant": "q8",
-     "file": "model.q8.onnx",
+     "file": "q8/model.onnx",
      "size": 84750,
      "sha256": "5bb91e2c730a126b0dff16151c3667ad7e66ef0ec46e74d67100d9dbce1b0db3",
      "note": "int8 QDQ 全量化（体积最小）",
-     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-beta/model.q8.onnx"
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-beta/q8/model.onnx"
     }
    ],
    "metrics": {
