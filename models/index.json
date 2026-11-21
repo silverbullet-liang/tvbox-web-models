@@ -120,7 +120,7 @@
    "id": "silver-adskip-1-mini-alpha",
    "name": "广告识别 mini Alpha",
    "beta": true,
-   "version": "1.0.0-alpha.1",
+   "version": "1.0.0-alpha.2",
    "task": "三模态广告识别（音频主判，画面为辅）",
    "params": 70483,
    "input": {
@@ -164,14 +164,14 @@
    },
    "threshold": 0.85,
    "threshold_source": "音频为主判据；阈值沿用 0.85，实测音频负样本均值 0.478（beta 0.571），误报更少",
-   "judge": "audio-first",
-   "judge_hint": "有音频时以音频概率判定，音频不可用才回退到画面",
+   "judge": "audio+visual",
+   "judge_hint": "音频≥0.95 单独触发；音频≥阈值且画面≥0.35 才触发；无音频回退看画面",
    "files": [
     {
      "variant": "fp32",
      "file": "fp32/model.onnx",
      "size": 285884,
-     "sha256": "e7a74a41878f3453665ec52063795ddb78bd2807abc755fd4be87e131a6c4d66",
+     "sha256": "729d587cf3823c240918afa72c7df9fd821f7a4742c4e17d5af8fd005373e24e",
      "note": "原始 float32",
      "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/fp32/model.onnx"
     },
@@ -179,26 +179,45 @@
      "variant": "int8",
      "file": "int8/model.onnx",
      "size": 253074,
-     "sha256": "c4bd244d693f4c58e168b6852af8dbc8912005bc162107ce1cfcf03352448730",
+     "sha256": "96f5927e519698f672c78a928c86b2018d9b20bd0f55b0d5acf222ade3d496f7",
      "note": "int8 动态量化（全连接层）",
      "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/int8/model.onnx"
     },
     {
      "variant": "q8",
      "file": "q8/model.onnx",
-     "size": 89246,
-     "sha256": "9ef319d6cc62b03e644d3152d1a5ba90dbd5d431a161f1c1cb236679e9c5e6ef",
-     "note": "权重 int8 per-channel（激活 fp32，WASM 数值稳定）",
+     "size": 89231,
+     "sha256": "6fa9f295d8facd59eb482c4f23fb65c9471feedfd15a1e40e167e68b13d47fcc",
+     "note": "权重 int8 per-channel（激活 fp32）",
      "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/q8/model.onnx"
     }
    ],
    "repo": "https://github.com/silverbullet-liang/tvbox-web-models",
    "limits": [
-    "训练去掉模糊增强，音频分支加宽（24/48/64），损失权重 aud 2.0 / vid 0.5 / img 0.5",
-    "与 beta 在同一测试集对比：音频 acc 0.677 vs 0.626、AUC 0.786 vs 0.778、负样本均值 0.478 vs 0.571",
-    "测试集仍是 ad1 末段 + 一支未参与训练的影片，非严格跨源；正片音频仅三支来源",
-    "alpha/beta 均为实验版，结构、阈值、文件名、是否继续分发可能变更且不另行通知"
-   ]
+    "音频按源严格切分：ad0（一支）训练、ad1 整支留出测试 —— 0.780/AUC 0.839 是真正没见过的配乐",
+    "beta 在同一切分上为 0.866/AUC 0.915，但其训练集含 ad1 前 60%，属数据泄漏，数字不可比",
+    "图像去掉模糊；音频分支 24/48/64；损失权重 aud 2.0 / vid 0.5 / img 0.5",
+    "正片音频仅三支来源（动画音轨、两段音乐、trailer），trailer 类音效密集片段仍可能误判",
+    "alpha/beta 均为实验版，结构、阈值、文件名可能变更且不另行通知"
+   ],
+   "metrics": {
+    "test": {
+     "img": {
+      "acc@0.5": 1.0,
+      "auc": 1.0
+     },
+     "vid": {
+      "acc@0.5": 0.992,
+      "auc": 1.0
+     },
+     "aud": {
+      "acc@0.5": 0.78,
+      "auc": 0.839,
+      "mean_pos": 0.954,
+      "mean_neg": 0.447
+     }
+    }
+   }
   }
  ]
 }
