@@ -3,6 +3,191 @@
  "updated": "2026-11-21",
  "models": [
   {
+   "id": "silver-adskip-1-mini-omega",
+   "name": "广告识别 mini Omega",
+   "beta": true,
+   "version": "1.0.0-omega.1",
+   "task": "三模态广告识别（视频 / 音频 / 图片，可单独或同时输入）",
+   "params": 70483,
+   "input": {
+    "img": [
+     1,
+     3,
+     32,
+     32
+    ],
+    "vid": [
+     8,
+     3,
+     32,
+     32
+    ],
+    "aud": [
+     1,
+     1,
+     64,
+     32
+    ]
+   },
+   "output": {
+    "p_img": [
+     1,
+     1
+    ],
+    "p_vid": [
+     1,
+     1
+    ],
+    "p_aud": [
+     1,
+     1
+    ]
+   },
+   "preprocess": {
+    "img": "canvas 缩放 32×32，RGB，值域 0–1，CHW",
+    "vid": "抽 8 帧（均匀覆盖片段），各缩 32×32，CHW，值域 0–1",
+    "aud": "16 kHz 单声道，512 点汉宁窗 hop 256，64 维 mel，log(m+1e-6) 后 (m+11)/11 截 0–1，取 32 帧"
+   },
+   "threshold": 0.8,
+   "threshold_source": "跨源测试集上 0.80 对应广告窗口召回 74.7%、正片误报 3.95%",
+   "judge": "audio+visual",
+   "files": [
+    {
+     "variant": "fp32",
+     "file": "fp32/model.onnx",
+     "size": 285884,
+     "sha256": "f0c61ab755c6aae0eaf639c36efa113f682d6b8968910628942c7a018a66f604",
+     "note": "原始 float32（推荐）",
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-omega/fp32/model.onnx"
+    },
+    {
+     "variant": "int8",
+     "file": "int8/model.onnx",
+     "size": 253074,
+     "sha256": "e522e7942c2dc9b7ffcaa7d1a159a90c1b212f52905347637ff395cf800f11e7",
+     "note": "int8 动态量化（全连接层）",
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-omega/int8/model.onnx"
+    },
+    {
+     "variant": "q8",
+     "file": "q8/model.onnx",
+     "size": 89250,
+     "sha256": "c68f36d5cb5551ac1d8db29d3ec9a4a105a1fd1afa723cb11cf86b23a4e86006",
+     "note": "权重 int8 per-channel + 激活 fp32（体积最小）",
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-omega/q8/model.onnx"
+    }
+   ],
+   "limits": [
+    "训练只有两支广告（其中一支整支留作跨源测试），负样本 31 个源",
+    "同测试集对比 alpha v2：音频误报率 25.3% → 4.0%，AUC 0.917 → 0.962",
+    "负样本含 UP 主自有鬼畜/快切素材，花哨片头的误判明显下降",
+    "输出仅为概率，跳不跳由程序按阈值判定"
+   ]
+  },
+  {
+   "id": "silver-adskip-1-mini-alpha",
+   "name": "广告识别 mini Alpha",
+   "beta": true,
+   "version": "1.0.0-alpha.2",
+   "task": "三模态广告识别（音频主判，画面为辅）",
+   "params": 70483,
+   "input": {
+    "img": [
+     1,
+     3,
+     32,
+     32
+    ],
+    "vid": [
+     8,
+     3,
+     32,
+     32
+    ],
+    "aud": [
+     1,
+     1,
+     64,
+     32
+    ]
+   },
+   "output": {
+    "p_img": [
+     1,
+     1
+    ],
+    "p_vid": [
+     1,
+     1
+    ],
+    "p_aud": [
+     1,
+     1
+    ]
+   },
+   "preprocess": {
+    "img": "canvas 32×32 CHW，除以 255",
+    "vid": "8 帧均匀抽，32×32 CHW",
+    "aud": "16 kHz 单声道，512 点汉宁窗 hop 256，64 维 mel，log(m+1e-6) → (m+11)/11 截 0–1，32 帧"
+   },
+   "threshold": 0.85,
+   "threshold_source": "音频为主判据；阈值沿用 0.85，实测音频负样本均值 0.478（beta 0.571），误报更少",
+   "judge": "audio+visual",
+   "judge_hint": "音频≥0.95 单独触发；音频≥阈值且画面≥0.35 才触发；无音频回退看画面",
+   "files": [
+    {
+     "variant": "fp32",
+     "file": "fp32/model.onnx",
+     "size": 285884,
+     "sha256": "729d587cf3823c240918afa72c7df9fd821f7a4742c4e17d5af8fd005373e24e",
+     "note": "原始 float32",
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/fp32/model.onnx"
+    },
+    {
+     "variant": "int8",
+     "file": "int8/model.onnx",
+     "size": 253074,
+     "sha256": "96f5927e519698f672c78a928c86b2018d9b20bd0f55b0d5acf222ade3d496f7",
+     "note": "int8 动态量化（全连接层）",
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/int8/model.onnx"
+    },
+    {
+     "variant": "q8",
+     "file": "q8/model.onnx",
+     "size": 89231,
+     "sha256": "6fa9f295d8facd59eb482c4f23fb65c9471feedfd15a1e40e167e68b13d47fcc",
+     "note": "权重 int8 per-channel（激活 fp32）",
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/q8/model.onnx"
+    }
+   ],
+   "repo": "https://github.com/silverbullet-liang/tvbox-web-models",
+   "limits": [
+    "音频按源严格切分：ad0（一支）训练、ad1 整支留出测试 —— 0.780/AUC 0.839 是真正没见过的配乐",
+    "beta 在同一切分上为 0.866/AUC 0.915，但其训练集含 ad1 前 60%，属数据泄漏，数字不可比",
+    "图像去掉模糊；音频分支 24/48/64；损失权重 aud 2.0 / vid 0.5 / img 0.5",
+    "正片音频仅三支来源（动画音轨、两段音乐、trailer），trailer 类音效密集片段仍可能误判",
+    "alpha/beta 均为实验版，结构、阈值、文件名可能变更且不另行通知"
+   ],
+   "metrics": {
+    "test": {
+     "img": {
+      "acc@0.5": 1.0,
+      "auc": 1.0
+     },
+     "vid": {
+      "acc@0.5": 0.992,
+      "auc": 1.0
+     },
+     "aud": {
+      "acc@0.5": 0.78,
+      "auc": 0.839,
+      "mean_pos": 0.954,
+      "mean_neg": 0.447
+     }
+    }
+   }
+  },
+  {
    "id": "silver-adskip-1-mini-beta",
    "name": "广告识别 mini（beta）",
    "beta": true,
@@ -115,109 +300,6 @@
     "beta：结构、阈值、文件名、是否继续分发均可能变更且不另行通知"
    ],
    "repo": "https://github.com/silverbullet-liang/tvbox-web-models"
-  },
-  {
-   "id": "silver-adskip-1-mini-alpha",
-   "name": "广告识别 mini Alpha",
-   "beta": true,
-   "version": "1.0.0-alpha.2",
-   "task": "三模态广告识别（音频主判，画面为辅）",
-   "params": 70483,
-   "input": {
-    "img": [
-     1,
-     3,
-     32,
-     32
-    ],
-    "vid": [
-     8,
-     3,
-     32,
-     32
-    ],
-    "aud": [
-     1,
-     1,
-     64,
-     32
-    ]
-   },
-   "output": {
-    "p_img": [
-     1,
-     1
-    ],
-    "p_vid": [
-     1,
-     1
-    ],
-    "p_aud": [
-     1,
-     1
-    ]
-   },
-   "preprocess": {
-    "img": "canvas 32×32 CHW，除以 255",
-    "vid": "8 帧均匀抽，32×32 CHW",
-    "aud": "16 kHz 单声道，512 点汉宁窗 hop 256，64 维 mel，log(m+1e-6) → (m+11)/11 截 0–1，32 帧"
-   },
-   "threshold": 0.85,
-   "threshold_source": "音频为主判据；阈值沿用 0.85，实测音频负样本均值 0.478（beta 0.571），误报更少",
-   "judge": "audio+visual",
-   "judge_hint": "音频≥0.95 单独触发；音频≥阈值且画面≥0.35 才触发；无音频回退看画面",
-   "files": [
-    {
-     "variant": "fp32",
-     "file": "fp32/model.onnx",
-     "size": 285884,
-     "sha256": "729d587cf3823c240918afa72c7df9fd821f7a4742c4e17d5af8fd005373e24e",
-     "note": "原始 float32",
-     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/fp32/model.onnx"
-    },
-    {
-     "variant": "int8",
-     "file": "int8/model.onnx",
-     "size": 253074,
-     "sha256": "96f5927e519698f672c78a928c86b2018d9b20bd0f55b0d5acf222ade3d496f7",
-     "note": "int8 动态量化（全连接层）",
-     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/int8/model.onnx"
-    },
-    {
-     "variant": "q8",
-     "file": "q8/model.onnx",
-     "size": 89231,
-     "sha256": "6fa9f295d8facd59eb482c4f23fb65c9471feedfd15a1e40e167e68b13d47fcc",
-     "note": "权重 int8 per-channel（激活 fp32）",
-     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-mini-alpha/q8/model.onnx"
-    }
-   ],
-   "repo": "https://github.com/silverbullet-liang/tvbox-web-models",
-   "limits": [
-    "音频按源严格切分：ad0（一支）训练、ad1 整支留出测试 —— 0.780/AUC 0.839 是真正没见过的配乐",
-    "beta 在同一切分上为 0.866/AUC 0.915，但其训练集含 ad1 前 60%，属数据泄漏，数字不可比",
-    "图像去掉模糊；音频分支 24/48/64；损失权重 aud 2.0 / vid 0.5 / img 0.5",
-    "正片音频仅三支来源（动画音轨、两段音乐、trailer），trailer 类音效密集片段仍可能误判",
-    "alpha/beta 均为实验版，结构、阈值、文件名可能变更且不另行通知"
-   ],
-   "metrics": {
-    "test": {
-     "img": {
-      "acc@0.5": 1.0,
-      "auc": 1.0
-     },
-     "vid": {
-      "acc@0.5": 0.992,
-      "auc": 1.0
-     },
-     "aud": {
-      "acc@0.5": 0.78,
-      "auc": 0.839,
-      "mean_pos": 0.954,
-      "mean_neg": 0.447
-     }
-    }
-   }
   }
  ]
 }
