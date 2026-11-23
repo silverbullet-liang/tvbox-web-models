@@ -1,6 +1,6 @@
 {
  "schema": 3,
- "updated": "2026-11-23",
+ "updated": "2026-11-24",
  "models": [
   {
    "id": "silver-adskip-1-mini-omega",
@@ -148,16 +148,16 @@
    "name": "广告识别 Pro",
    "beta": true,
    "frontend": false,
-   "version": "1.0.0-pro.1",
+   "version": "1.0.0-pro.2",
    "params": 70483,
    "threshold": 0.85,
-   "threshold_source": "跨源测试集上 0.85 对应广告窗口召回 73.9%、正片误报 5.5%",
+   "threshold_source": "跨源测试集上 0.85 对应广告窗口召回 71.5%、正片误报 4.7%",
    "files": [
     {
      "variant": "fp32",
      "file": "fp32/model.onnx",
      "size": 285884,
-     "sha256": "2adc7b657699bc6f5767a7af27fae109360e678504b1a87b528b8d68021a3aba",
+     "sha256": "fd0d272b53c0c41cc6325384b74115279475075c9f6f6716807f441ae43b8c4e",
      "note": "原始 float32",
      "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-Pro/fp32/model.onnx"
     },
@@ -165,7 +165,7 @@
      "variant": "int8",
      "file": "int8/model.onnx",
      "size": 253074,
-     "sha256": "a4c0b357ab4bcf2d1660bba1981dad5be9527eb3f3c74ae0cb54e8a650b0ddd0",
+     "sha256": "6116bd90dcf7e266c96e6cb886a0e69c2bf966b64a4a33a2b3eef14ad680f9d8",
      "note": "int8 动态量化（Gemm）",
      "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-Pro/int8/model.onnx"
     },
@@ -173,7 +173,7 @@
      "variant": "q8",
      "file": "q8/model.onnx",
      "size": 89166,
-     "sha256": "9c3cb8261668dca86671b3c405ef9f656cb9e5efe7f3b66634773b85c5d8bd19",
+     "sha256": "ded883f72a86b15c18630142071d5494ac187b23da942fe995d212ed243883f9",
      "note": "权重 int8 per-channel（QInt8）",
      "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-Pro/q8/model.onnx"
     }
@@ -181,27 +181,27 @@
    "metrics": {
     "aud": {
      "n": 276,
-     "acc@0.5": 0.8889,
-     "auc": 0.9588,
-     "mean_pos": 0.837,
-     "mean_neg": 0.082,
-     "fpr@0.85": 0.055
+     "acc@0.5": 0.8873,
+     "auc": 0.958,
+     "mean_pos": 0.828,
+     "mean_neg": 0.088,
+     "fpr@0.85": 0.047
     },
     "compare_omega": {
      "auc": 0.9622,
      "acc@0.5": 0.8792,
      "fpr@0.85": 0.04,
-     "paired_auc_delta": -0.0034,
+     "paired_auc_delta": -0.0042,
      "delta_ci95": [
-      -0.0065,
-      -0.0006
+      -0.008,
+      -0.0008
      ]
     }
    },
    "limits": [
-    "用必剪匿名 ASR 把广告音频转成文案，归类校正后以网址变量生成 6 段文本，再用 Edge TTS 六种音色合成音频正样本；权重从 Omega 微调而来",
-    "跨源测试集 AUC 0.9588，略低于 Omega 的 0.9622（配对 bootstrap 95%CI -0.0065~-0.0006）",
-    "0.5 阈值准确率 0.8889 高于 Omega 的 0.8792，但在前端默认 0.80 阈值下误报 5.9%，高于 Omega 的 4.0%",
+    "用必剪匿名 ASR 把广告音频转成文案，归类校正后以网址变量生成 18 段文本，再用 Edge TTS 六种音色合成音频正样本；权重从 Omega 微调而来",
+    "跨源测试集 AUC 0.9580，略低于 Omega 的 0.9622（配对 bootstrap 95%CI -0.0080~-0.0008）",
+    "0.5 阈值准确率 0.8873 高于 Omega 的 0.8792；误报率 @0.85 为 4.7%，高于 Omega 的 4.0%，但低于上一版的 5.5%",
     "前端默认仍是 Omega，本模型只在仓库提供，不作为替代品",
     "输出仅为概率，跳不跳由程序按阈值判定"
    ],
