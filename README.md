@@ -30,7 +30,7 @@ models/
 | ID | 定位 | 参数 | 体积 | 前端 | 状态 |
 |---|---|---|---|---|---|
 | `silver-adskip-1-mini-omega` | 三模态广告识别，音频主判 + 画面佐证 | 70,483 | 87–279 KB | 显示 | 正式 1.0.0 |
-| `silver-adskip-1-Pro` | 同上，追加 6 段 TTS 合成音频正样本微调 | 70,483 | 87–279 KB | 不显示 | 实验，指标未超 Omega |
+| `silver-adskip-1-Pro` | 同上，追加 18 段 TTS 合成音频正样本微调 | 70,483 | 87–279 KB | 不显示 | 实验，指标未超 Omega |
 | `silver-adskip-1-mini-alpha` | 同上，音频优先的旧判定策略 | 70,483 | 87–285 KB | 不显示 | alpha |
 | `silver-adskip-1-mini-beta` | 三路等权的第一版 | 48,963 | 83–195 KB | 不显示 | beta |
 
