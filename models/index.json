@@ -146,18 +146,18 @@
    "judge": "audio+visual",
    "id": "silver-adskip-1-Pro",
    "name": "广告识别 Pro",
-   "beta": true,
+   "beta": false,
    "frontend": false,
-   "version": "1.0.0-pro.2",
+   "version": "1.0.0-pro.3",
    "params": 70483,
-   "threshold": 0.85,
-   "threshold_source": "跨源测试集上 0.85 对应广告窗口召回 71.5%、正片误报 4.7%",
+   "threshold": 0.6,
+   "threshold_source": "跨源测试集上 0.60 对应广告窗口召回 78.3%、正片误报 3.2%（Omega 在 0.80 为 74.7% / 4.0%）",
    "files": [
     {
      "variant": "fp32",
      "file": "fp32/model.onnx",
      "size": 285884,
-     "sha256": "fd0d272b53c0c41cc6325384b74115279475075c9f6f6716807f441ae43b8c4e",
+     "sha256": "f45baaf8e04de28b02f181399efe73c365f3f49ab5ac11942dd061331ea10bf3",
      "note": "原始 float32",
      "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-Pro/fp32/model.onnx"
     },
@@ -165,44 +165,48 @@
      "variant": "int8",
      "file": "int8/model.onnx",
      "size": 253074,
-     "sha256": "6116bd90dcf7e266c96e6cb886a0e69c2bf966b64a4a33a2b3eef14ad680f9d8",
+     "sha256": "765ffb245ab6e2b1d30ca02620639a488aeb290291ce77e90a2aaca1d47055c3",
      "note": "int8 动态量化（Gemm）",
      "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-Pro/int8/model.onnx"
     },
     {
-     "variant": "q8",
-     "file": "q8/model.onnx",
-     "size": 89166,
-     "sha256": "ded883f72a86b15c18630142071d5494ac187b23da942fe995d212ed243883f9",
-     "note": "权重 int8 per-channel（QInt8）",
-     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-Pro/q8/model.onnx"
+     "variant": "fp16",
+     "file": "fp16/model.onnx",
+     "size": 146150,
+     "sha256": "223c376287cf9dbbb496a86d6b0432d4245eb4e24aa67875f59cfaad3ec34153",
+     "note": "fp16 权重存储，运算前 Cast 回 fp32",
+     "url": "https://raw.githubusercontent.com/silverbullet-liang/tvbox-web-models/main/models/silver-adskip-1-Pro/fp16/model.onnx"
     }
    ],
    "metrics": {
     "aud": {
      "n": 276,
-     "acc@0.5": 0.8873,
-     "auc": 0.958,
-     "mean_pos": 0.828,
-     "mean_neg": 0.088,
-     "fpr@0.85": 0.047
+     "acc@0.5": 0.8712,
+     "auc": 0.9695,
+     "mean_pos": 0.796,
+     "mean_neg": 0.052,
+     "fpr@0.85": 0.024,
+     "recall@0.60": 0.783,
+     "fpr@0.60": 0.032
     },
     "compare_omega": {
      "auc": 0.9622,
      "acc@0.5": 0.8792,
      "fpr@0.85": 0.04,
-     "paired_auc_delta": -0.0042,
+     "paired_auc_delta": 0.0072,
      "delta_ci95": [
-      -0.008,
-      -0.0008
-     ]
+      0.0011,
+      0.0141
+     ],
+     "p_better": 0.99
     }
    },
    "limits": [
-    "用必剪匿名 ASR 把广告音频转成文案，归类校正后以网址变量生成 18 段文本，再用 Edge TTS 六种音色合成音频正样本；权重从 Omega 微调而来",
-    "跨源测试集 AUC 0.9580，略低于 Omega 的 0.9622（配对 bootstrap 95%CI -0.0080~-0.0008）",
-    "0.5 阈值准确率 0.8873 高于 Omega 的 0.8792；误报率 @0.85 为 4.7%，高于 Omega 的 4.0%，但低于上一版的 5.5%",
-    "前端默认仍是 Omega，本模型只在仓库提供，不作为替代品",
+    "用必剪匿名 ASR 把广告音频转成文案，归类校正后以网址变量生成 18 段文本，Edge TTS 六种音色合成；从 Omega 权重重新完整训练 150 轮（非微调），合成音频正样本 18 个窗口",
+    "跨源测试集 AUC 0.9695，配对 bootstrap 差 +0.0072，95%CI [+0.0011, +0.0141]，P(优于 Omega)=0.990",
+    "误报率 @0.85 为 2.4%（Omega 4.0%）；0.5 阈值准确率 0.8712 略低于 Omega 的 0.8792，因模型整体更保守",
+    "建议阈值 0.60：召回 78.3%、误报 3.2%，比 Omega 在 0.80 的 74.7% / 4.0% 更好",
+    "前端默认仍为 Omega，本模型 frontend=false，需手动切换",
     "输出仅为概率，跳不跳由程序按阈值判定"
    ],
    "repo": "https://github.com/silverbullet-liang/tvbox-web-models"
