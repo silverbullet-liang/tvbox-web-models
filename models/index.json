@@ -45,7 +45,7 @@
    },
    "judge": "audio+visual",
    "id": "silver-adskip-1-Pro",
-   "name": "广告识别 Pro",
+   "name": "silver-adskip-1-Pro",
    "beta": false,
    "frontend": true,
    "version": "1.0.0-pro.3",
