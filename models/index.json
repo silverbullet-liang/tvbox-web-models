@@ -1,5 +1,5 @@
 {
- "schema": 5,
+ "schema": 6,
  "updated": "2026-11-24",
  "models": [
   {
@@ -113,7 +113,7 @@
   },
   {
    "id": "silver-adskip-1-mini-omega",
-   "name": "广告识别 mini Omega",
+   "name": "silver-adskip-1-mini-omega",
    "beta": false,
    "version": "1.0.0",
    "task": "三模态广告识别（视频 / 音频 / 图片，可单独或同时输入）",
@@ -213,7 +213,7 @@
   },
   {
    "id": "silver-adskip-1-mini-alpha",
-   "name": "广告识别 mini Alpha",
+   "name": "silver-adskip-1-mini-alpha",
    "beta": true,
    "version": "1.0.0-alpha.2",
    "task": "三模态广告识别（音频主判，画面为辅）",
@@ -317,7 +317,7 @@
   },
   {
    "id": "silver-adskip-1-mini-beta",
-   "name": "广告识别 mini（beta）",
+   "name": "silver-adskip-1-mini-beta",
    "beta": true,
    "version": "1.0.0-beta.1",
    "task": "三模态广告识别（视频 / 音频 / 图片，可单独或同时输入）",
